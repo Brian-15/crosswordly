@@ -1,10 +1,12 @@
 const TrieNode = require("./TrieNode");
 
-describe("Node class", () => {
+describe("TrieNode class", () => {
   let node;
 
   beforeEach(() => {
     node = new TrieNode('a');
+    const child = new TrieNode('a');
+    node.children[0] = child;
   });
 
   test("instanciates properly", () => {
@@ -18,5 +20,27 @@ describe("Node class", () => {
     expect(node.isWord).toBeTruthy();
     node.unMarkWord();
     expect(node.isWord).toBeFalsy();
+  });
+
+  test("getChildIdx static method", () => {
+    expect(TrieNode.getChildIdx('a')).toBe(0);
+    expect(TrieNode.getChildIdx('z')).toBe(25);
+  });
+
+  test("hasChild method", () => {
+    expect(node.hasChild('l')).toBeFalsy();
+    expect(node.hasChild('a')).toBeTruthy();
+  });
+
+  test("getChild method", () => {
+    expect(node.getChild('l')).toBe(null);
+    expect(node.getChild('a')).toBeInstanceOf(TrieNode);
+    expect(node.getChild('a').char).toBe('a');
+  });
+
+  test("addChild method", () => {
+    expect(node.hasChild('b')).toBeFalsy();
+    node.addChild('b');
+    expect(node.hasChild('b')).toBeTruthy();
   });
 });

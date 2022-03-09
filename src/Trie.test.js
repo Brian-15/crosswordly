@@ -13,19 +13,14 @@ describe("Trie class data structure", () => {
     expect(t.root.char).toBe(undefined);
   });
 
-  test("getChildIdx method", () => {
-    expect(Trie.getChildIdx('a')).toBe(0);
-    expect(Trie.getChildIdx('z')).toBe(25);
-  });
-
   test("insert method", () => {
     t.insert("abc");
-    expect(t.root.children[Trie.getChildIdx('a')].char).toBe('a');
-    expect(t.root.children[Trie.getChildIdx('a')]
-                 .children[Trie.getChildIdx('b')].char).toBe('b');
-    const leafNode = t.root.children[Trie.getChildIdx('a')]
-                           .children[Trie.getChildIdx('b')]
-                           .children[Trie.getChildIdx('c')];
+    expect(t.root.hasChild('a')).toBeTruthy();
+    expect(t.root.getChild('a').hasChild('b')).toBeTruthy();
+    const leafNode = t.root.getChild('a')
+                           .getChild('b')
+                           .getChild('c');
+    expect(leafNode).not.toBe(null);
     expect(leafNode.char).toBe('c');
     expect(leafNode.isWord).toBeTruthy();
   });
@@ -40,7 +35,6 @@ describe("Trie class data structure", () => {
 
   test("processWordsFrom method", () => {
     t.processWordsFrom("cat");
-    console.log(t.root.children);
     expect(t.guess("act")).toBeTruthy();
     expect(t.guess("cat")).toBeTruthy();
     expect(t.guess("at")).toBeFalsy();

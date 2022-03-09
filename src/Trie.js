@@ -7,19 +7,10 @@ class Trie {
     this.root = new TrieNode();
   }
 
-  static getChildIdx = char => char.charCodeAt(0) - 'a'.charCodeAt(0);
-
   insert = word => {
     let node = this.root;
     for (const char of word) {
-      const idx = Trie.getChildIdx(char);
-      if (!node.children[idx]) {
-        const child = new TrieNode(char);
-        node.children[idx] = child;
-        node = child;
-      } else {
-        node = node.children[idx];
-      }
+      node = node.hasChild(char) ? node.getChild(char) : node.addChild(char);
     }
     node.markWord();
   };
@@ -34,9 +25,8 @@ class Trie {
   guess = word => {
     let node = this.root;
     for (const char of word) {
-      const idx = Trie.getChildIdx(char);
-      if (!node || !node.children[idx]) return false;
-      node = node.children[idx];
+      if (!node || !node.hasChild(char)) return false;
+      node = node.getChild(char);
     }
     return node.isWord;
   };
