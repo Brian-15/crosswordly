@@ -7,6 +7,7 @@ describe("TrieNode class", () => {
     node = new TrieNode('a');
     const child = new TrieNode('a');
     node.children[0] = child;
+    node.numChildren = 1;
   });
 
   test("instanciates properly", () => {
@@ -40,7 +41,9 @@ describe("TrieNode class", () => {
 
   test("addChild method", () => {
     expect(node.hasChild('b')).toBeFalsy();
+    expect(node.numChildren).toBe(1);
     node.addChild('b');
     expect(node.hasChild('b')).toBeTruthy();
+    expect(node.numChildren).toBe(2);
   });
 });

@@ -28,6 +28,7 @@ class TrieNode {
   addChild(char) {
     const child = new TrieNode(char);
     this.children[TrieNode.getChildIdx(char)] = child;
+    this.numChildren++;
     return child;
   }
 }
