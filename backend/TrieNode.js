@@ -31,6 +31,21 @@ class TrieNode {
     this.numChildren++;
     return child;
   }
+
+  getNextChild() {
+    const children = this.children;
+    let idx = 0;
+    return function() {
+      if (idx >= children.length) return null;
+      for (let i = idx; i < children.length; i++) {
+        if (children[i] !== null) {
+          idx = i + 1;
+          return children[i];
+        }
+      }
+      return null;
+    }
+  }
 }
 
 module.exports = TrieNode;

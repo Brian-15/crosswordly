@@ -46,4 +46,14 @@ describe("TrieNode class", () => {
     expect(node.hasChild('b')).toBeTruthy();
     expect(node.numChildren).toBe(2);
   });
+
+  test("getNextChild method", () => {
+    node.addChild('x');
+    node.addChild('y');
+    const nextChild = node.getNextChild();
+    expect(nextChild().char).toBe('a');
+    expect(nextChild().char).toBe('x');
+    expect(nextChild().char).toBe('y');
+    expect(nextChild()).toBe(null);
+  });
 });

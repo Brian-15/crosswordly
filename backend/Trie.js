@@ -1,4 +1,4 @@
-const dict = require("../dictionary.json");
+const dict = require("./dictionary.json");
 const TrieNode = require("./TrieNode");
 
 /** Prefix tree data structure */
