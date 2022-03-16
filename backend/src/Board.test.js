@@ -5,7 +5,7 @@ describe("Board class", () => {
   let b;
 
   beforeEach(() => {
-    b = new Board(HEIGHT, WIDTH);
+    b = new Board('likeable', HEIGHT, WIDTH);
   });
 
   test("instantiates properly", () => {
@@ -104,7 +104,7 @@ describe("Board class", () => {
       expect(b.rows.every(row => row.length === WIDTH)).toBeTruthy();
     });
 
-    test.only("places word across another", () => {
+    test("places word across another", () => {
       b.placeWord("stuff", 2, 1, true);
       expect(b.canPlaceWord("atmosphere", 1, 2, false)).toBeTruthy();
       b.placeWord("atmosphere", 1, 2, false);
@@ -242,10 +242,10 @@ describe("Board class", () => {
       expect(() => b.canPlaceWord("stuff", 0, 0)).toThrow();
     });
 
-    test("throws error when indices are below zero", () => {
-      expect(() => b.canPlaceWord("anything", -1, 0, true)).toThrow();
-      expect(() => b.canPlaceWord("anything", 0, -1, false)).toThrow();
-      expect(() => b.canPlaceWord("anything", -1, -3, true)).toThrow();
+    test("returns false when indices are below zero", () => {
+      expect(b.canPlaceWord("anything", -1, 0, true)).toBeFalsy();
+      expect(b.canPlaceWord("anything", 0, -1, false)).toBeFalsy();
+      expect(b.canPlaceWord("anything", -1, -3, true)).toBeFalsy();
     });
 
     test("can place any word in blank board", () => {
@@ -268,6 +268,12 @@ describe("Board class", () => {
       expect(b.canPlaceWord("things", 0, b.width, false)).toBeTruthy();
       expect(b.canPlaceWord("things", b.height, 0, false)).toBeTruthy();
       expect(b.canPlaceWord("things", b.height, b.width, false)).toBeTruthy();
+    });
+  });
+
+  describe("genBoard method", () => {
+    test.only("", () => {
+      b.genBoard();
     });
   });
   
