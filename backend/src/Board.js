@@ -57,7 +57,6 @@ class Board {
     this.setHeight(newHeight);
   };
 
-  // TODO: canPlaceWord does not properly assess matching character
   canPlaceWord = (word, x, y, isHorizontal) => {
     try {
       if (isHorizontal === undefined) throw new Error("must specify isHorizontal as true or false");
@@ -65,7 +64,10 @@ class Board {
       if (isHorizontal) {
         if (!this.rows[x]) return true;
         for (let i = 0; i < word.length; i++) {
+          // cannot place if character is present, and does not match
           if (this.rows[x][y + i] && this.rows[x][y + i] !== word[i]) return false;
+
+          // cannot place if adjacent to letters from other words
         }
       } else {
         for (let i = 0; i < word.length; i++) {
@@ -134,12 +136,13 @@ class Board {
     this.placeWord(word, startX, startY, isHorizontal);
     placedWords.push(new Word(word, startX, startY, isHorizontal));
     // let count = 1; // this will be for maxWords
-    console.table(this.rows);
+    // console.table(this.rows);
     isHorizontal = !isHorizontal;
 
     while (words.length && placedWords.length < maxWords) {
       word = words.pop();
       for (const placedWord of placedWords) {
+        if (placedWord.isHorizontal === isHorizontal) continue;
         let foundMatch = false;
         for (let i = 0; i < word.length; i++) {
           if (!placedWord.has(word[i])) continue;
@@ -165,6 +168,8 @@ class Board {
             placedWords.push(newPlacedWord);
             foundMatch = true;
             console.table(this.rows);
+            isHorizontal = !isHorizontal;
+            break;
           }
         }
         if (foundMatch) break;
