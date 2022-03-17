@@ -1,5 +1,6 @@
 'use strict';
 
+const Word = require("./Word");
 const trie = require("./seed");
 // const Word = require("./Word");
 
@@ -58,20 +59,26 @@ class Board {
 
   // TODO: canPlaceWord does not properly assess matching character
   canPlaceWord = (word, x, y, isHorizontal) => {
-    if (isHorizontal === undefined) throw new Error("must specify isHorizontal as true or false");
-    if (x < 0 || y < 0) return false;
-    if (isHorizontal) {
-      if (!this.rows[x]) return true;
-      for (let i = 0; i < word.length; i++) {
-        if (this.rows[x][y + i] && this.rows[x][y + i] !== word[i]) return false;
+    try {
+      if (isHorizontal === undefined) throw new Error("must specify isHorizontal as true or false");
+      if (x < 0 || y < 0) return false;
+      if (isHorizontal) {
+        if (!this.rows[x]) return true;
+        for (let i = 0; i < word.length; i++) {
+          if (this.rows[x][y + i] && this.rows[x][y + i] !== word[i]) return false;
+        }
+      } else {
+        for (let i = 0; i < word.length; i++) {
+          if (!this.rows[x + i]) break;
+          if (this.rows[x + i][y] && this.rows[x + i][y] !== word[i]) return false;
+        }
       }
-    } else {
-      for (let i = x; i < x + word.length; i++) {
-        if (!this.rows[x + i]) break;
-        if (this.rows[x + i][y] && this.rows[x + i][y] !== word[i]) return false;
-      }
+      return true;
+    } catch (err) {
+      console.error("found error here");
+      console.error(err)
     }
-    return true;
+    
   };
 
   placeWord = (word, x, y, isHorizontal) => {
@@ -95,14 +102,14 @@ class Board {
         this.rows[x][y + i] = word[i];
       }
       
-      console.table(this.rows);
+      // console.table(this.rows);
       console.log('final coords', x, y + i - 1);
       return [x, y + i - 1];
     } else {
       // adjust dimensions
       if (y >= this.width) this.setWidth(y + 1);
       if (x + word.length > this.height) this.setHeight(x + word.length);
-      console.table(this.rows);
+      // console.table(this.rows);
 
       // place on matrix
       for (i = 0; i < word.length; i++) {
@@ -113,70 +120,92 @@ class Board {
         this.rows[x + i][y] = word[i];
       }
       
-      console.table(this.rows);
-      console.log('final coords', x + i - 1, y);
+      // console.table(this.rows);
+      // console.log('final coords', x + i - 1, y);
       return [x + i - 1, y];
     }
   };
 
-  genBoard = () => {
+  genBoard = (startX=0, startY=0, maxWords=5) => {
     const words = Array.from(this.words).sort(() => 0.5 - Math.random());
+    const placedWords = [];
     let isHorizontal = Math.round(Math.random()) === 1;
-    let word = words.pop(), foundMatch = false;
-    let xi = 5, yi = 5;
-    let [xf, yf] = this.placeWord(word, xi, yi, isHorizontal);
+    let word = words.pop();
+    this.placeWord(word, startX, startY, isHorizontal);
+    placedWords.push(new Word(word, startX, startY, isHorizontal));
     // let count = 1; // this will be for maxWords
     console.table(this.rows);
     isHorizontal = !isHorizontal;
-    console.log(words)
-  
-    while (words.length) {
+
+    while (words.length && placedWords.length < maxWords) {
       word = words.pop();
-      for (let charIdx = 0; charIdx < word.length; charIdx++) {
-        if (isHorizontal) {
-          // iterate through previous vertical word to find a spot
-          for (let i = yi; i <= yf; i++) {
-            // console.log(`comparing ${word} at ${word[charIdx]} with ${this[xi][i]}`)
-            if (this.canPlaceWord(word, xi, i - charIdx, true)) {
-              console.log("found for horizontal", word, "at", xi, i - charIdx);
-              // get next coordinates
-              [xf, yf] = this.placeWord(word, xi, i - charIdx, true);
-              yi = i - charIdx;
+      for (const placedWord of placedWords) {
+        let foundMatch = false;
+        for (let i = 0; i < word.length; i++) {
+          if (!placedWord.has(word[i])) continue;
 
-              // toggle isHorizontal to prepare for next word
-              isHorizontal = !isHorizontal;
-              foundMatch = true;
-              break;
-            }
+          // gather index and coordinates of placed word
+          const charIdx = placedWord.charIdx(word[i]);
+          const { xi, yi } = placedWord.getCoords();
+
+          // find start coordinates of word where once placed would intersect on same char
+          let x, y;
+          if (placedWord.isHorizontal) {
+            x = xi - i;
+            y = yi + charIdx;
+          } else {
+            x = xi + charIdx;
+            y = yi - i;
           }
-        } else {
-          // iterate through previous horizontal word to find a spot
-          for (let i = xi; i <= xf; i++) {
-            // console.log(`comparing ${word} at ${word[charIdx]} with ${this[xi][i]}`)
-            if (this.canPlaceWord(word, i - charIdx, yi, false)) {
-              console.log("found for vertical", word, "at", i - charIdx, yi)
 
-              // get next coordinates 
-              [xf, yf] = this.placeWord(word, i - charIdx, yi, false);
-              console.table(this.rows);
-              xi = i - charIdx;
-
-              // toggle isHorizontal
-              isHorizontal = !isHorizontal;
-              foundMatch = true;
-              break;
-            }
+          // place word if deemed a valid spot
+          if (this.canPlaceWord(word, x, y, !placedWord.isHorizontal)) {
+            this.placeWord(word, x, y, !placedWord.isHorizontal);
+            const newPlacedWord = new Word(word, x, y, !placedWord.isHorizontal);
+            placedWords.push(newPlacedWord);
+            foundMatch = true;
+            console.table(this.rows);
           }
         }
-        if (!foundMatch) {
-          console.log("no match found");
-          words.push(word);
-        } else {
-          foundMatch = false;
-        }
+        if (foundMatch) break;
       }
+
+      console.table(this.rows);
     }
-    console.table(this.rows);
+  
+    // while (words.length && wordCount < maxWords) {
+    //   word = words.pop();
+    //   for (let charIdx = 0; charIdx < word.length; charIdx++) {
+    //     if (isHorizontal) {
+    //       // iterate through previous vertical word to find a spot
+    //       for (let i = yi; i <= yf; i++) {
+    //         // console.log(`comparing ${word} at ${word[charIdx]} with ${this[xi][i]}`)
+    //         if (this.canPlaceWord(word, xi, i - charIdx, true)) {
+    //           console.log("found for horizontal", word, "at", xi, i - charIdx);
+    //           // get next coordinates
+    //           [xf, yf] = this.placeWord(word, xi, i - charIdx, true);
+    //           yi = i - charIdx;
+    //           break;
+    //         }
+    //       }
+    //     } else {
+    //       // iterate through previous horizontal word to find a spot
+    //       for (let i = xi; i <= xf; i++) {
+    //         // console.log(`comparing ${word} at ${word[charIdx]} with ${this[xi][i]}`)
+    //         if (this.canPlaceWord(word, i - charIdx, yi, false)) {
+    //           console.log("found for vertical", word, "at", i - charIdx, yi)
+
+    //           // get next coordinates 
+    //           [xf, yf] = this.placeWord(word, i - charIdx, yi, false);
+    //           console.table(this.rows);
+    //           xi = i - charIdx;
+    //         }
+    //       }
+    //     }
+    //   }
+    //   isHorizontal = !isHorizontal;
+    // }
+    // console.table(this.rows);
   };
   
 }

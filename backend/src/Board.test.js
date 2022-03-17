@@ -269,6 +269,31 @@ describe("Board class", () => {
       expect(b.canPlaceWord("things", b.height, 0, false)).toBeTruthy();
       expect(b.canPlaceWord("things", b.height, b.width, false)).toBeTruthy();
     });
+
+    test("returns true when two words intersect on the same letter", () => {
+      b.placeWord("things", 5, 5, true);
+      expect(b.canPlaceWord("try", 5, 5, false)).toBeTruthy();
+    });
+
+    test("returns false when horizontal word over another horizontal word", () => {
+      b.placeWord("things", 5, 5, true);
+      expect(b.canPlaceWord("try", 5, 5, true)).toBeFalsy();
+    });
+
+    test("returns false when vertical word over another vertical word", () => {
+      b.placeWord("things", 5, 5, false);
+      expect(b.canPlaceWord("try", 5, 5, false)).toBeFalsy();
+    });
+
+    test("returns false when horizontal word's intersection with vertical word does not match", () => {
+      b.placeWord("things", 5, 5, true);
+      expect(b.canPlaceWord("stuff", 5, 5, false)).toBeFalsy();
+    });
+
+    test("returns false when vertical word's intersection with horizontal word does not match", () => {
+      b.placeWord("things", 5, 5, false);
+      expect(b.canPlaceWord("stuff", 5, 5, true)).toBeFalsy();
+    });
   });
 
   describe("genBoard method", () => {
