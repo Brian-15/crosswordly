@@ -5,18 +5,13 @@ class Word {
     this.coords = {
       xi: x,
       yi: y,
-      xf: isHorizontal ? x + word.length - 1 : x,
-      yf: isHorizontal ? y : y + word.length - 1
+      xf: isHorizontal ? x : x + word.length - 1,
+      yf: isHorizontal ? y + word.length - 1 : y
     };
     this.charMap = {};
     for (let i = 0; i < word.length; i++) {
       if (!this.charMap[word[i]]) this.charMap[word[i]] = i;
     }
-  }
-
-  addMatch(coords) {
-    this.matches.push(coords);
-    this.numMatches++;
   }
 
   get() {
