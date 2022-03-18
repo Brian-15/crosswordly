@@ -2,15 +2,15 @@
 
 const Word = require("./Word");
 const trie = require("./seed");
-// const Word = require("./Word");
 
-// dynamic board class
+/** Board class that generates crossword puzzle */
 class Board {
   constructor(letters, height=1, width=0) {
     this.height = height;
     this.width = width;
     this.rows = Array.from(new Array(height)).map(() => new Array(width).fill(null));
     this.words = trie.getWordsFrom(letters);
+    this.activeWords = {};
   }
 
   get = () => this.rows;
@@ -24,6 +24,7 @@ class Board {
   
   getHeight = () => this.height;
 
+  /** adjusts width of board */
   setWidth = newWidth => {
     if (newWidth <= 0) throw new Error("newWidth must be greater than zero");
     else if (newWidth === this.width) return;
@@ -39,6 +40,7 @@ class Board {
     this.width = newWidth;
   };
 
+  /** adjusts height of board */
   setHeight = newHeight => {
     if (newHeight <= 0) throw new Error("newHeight must greater than zero");
     else if (newHeight === this.height) return;
@@ -57,24 +59,29 @@ class Board {
     this.setHeight(newHeight);
   };
 
+  /** returns true when all the following cells, relative to cell at (x, y), are blank:
+   *  - horizontally: (x, y + 1), (x + 1, y), (x - 1, y);
+   *  - vertically: (x + 1, y), (x, y - 1), (x, y + 1);
+   */
   hasBlankAdjacentCells = (x, y, isHorizontal) => {
     if (x >= this.height || y >= this.width) return false;
     if (isHorizontal) {
       if ((this.rows[x] && this.rows[x][y + 1]) ||
           (this.rows[x + 1] && this.rows[x + 1][y]) ||
-          (this.rows[x - 1] && this.rows[x - 1][y])) {
+          (this.rows[x - 1] && this.rows[x - 1][y]))
+      {
         return false;
       }
     } else {
-      if (this.rows[x + 1] && this.rows[x + 1][y] ||
-        this.rows[x][y - 1] || this.rows[x][y + 1]) {
+      if ((this.rows[x + 1] && this.rows[x + 1][y]) ||
+          this.rows[x][y - 1] || this.rows[x][y + 1])
+      {
         return false;
       }
     }
     return true;
   };
 
-  // TODO: returning false when out of bounds
   canPlaceWord = (word, x, y, isHorizontal, intersectionIdx) => {
     if (isHorizontal === undefined) throw new Error("must specify isHorizontal as true or false");
     if (x < 0 || y < 0) return false;
@@ -86,7 +93,8 @@ class Board {
         // cannot place if character is present, and does not match
         if (this.rows[x][y + i] === undefined) break;
         if ((this.rows[x][y + i] && this.rows[x][y + i] !== word[i]) ||
-            (y + i !== intersectionIdx && !this.hasBlankAdjacentCells(x, y + i, true))) {
+            (y + i !== intersectionIdx && !this.hasBlankAdjacentCells(x, y + i, true)))
+        {
           return false;
         }
       }
@@ -142,6 +150,7 @@ class Board {
     placedWords.push(new Word(word, startX, startY, isHorizontal));
 
     while (words.length && placedWords.length < maxWords) {
+      words.sort(() => 0.5 - Math.random());
       word = words.pop();
       for (const placedWord of placedWords) {
         let foundMatch = false;
@@ -171,6 +180,7 @@ class Board {
           if (this.canPlaceWord(word, x, y, isHorizontal, intersectionIdx)) {
             this.placeWord(word, x, y, !placedWord.isHorizontal);
             const newPlacedWord = new Word(word, x, y, !placedWord.isHorizontal);
+            this.activeWords[word] = true;
             placedWords.push(newPlacedWord);
             foundMatch = true;
             isHorizontal = !isHorizontal;
@@ -179,8 +189,6 @@ class Board {
         }
         if (foundMatch) break;
       }
-
-      console.table(this.rows);
     }
   };
   
