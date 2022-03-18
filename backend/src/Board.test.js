@@ -87,6 +87,39 @@ describe("Board class", () => {
     expect(b.rows.every(row => row.length === 8)).toBeTruthy();
   });
 
+  describe("hasBlankAdjacentCells method", () => {
+    test("should return false when either x or y are out of bounds", () => {
+      for (const bool of [true, false]) {
+        expect(b.hasBlankAdjacentCells(b.height, 0, bool)).toBeFalsy();
+        expect(b.hasBlankAdjacentCells(0, b.width, bool)).toBeFalsy();
+        expect(b.hasBlankAdjacentCells(b.height, b.width, bool)).toBeFalsy();
+      }
+    });
+
+    test("should return true when all cells are blank", () => {
+      expect(b.hasBlankAdjacentCells(0, 0, true)).toBeTruthy();
+      expect(b.hasBlankAdjacentCells(0, 0, false)).toBeTruthy();
+      expect(b.hasBlankAdjacentCells(2, 2, true)).toBeTruthy();
+      expect(b.hasBlankAdjacentCells(2, 2, false)).toBeTruthy();
+    });
+
+    test("should return false for a position next to a horizontal word", () => {
+      b.placeWord("stuff", 0, 0, true);
+      for (let i = 0; i < 5; i++) {
+        expect(b.hasBlankAdjacentCells(1, i, true)).toBeFalsy();
+      }
+    });
+
+    test("should return false for a position next to a vertical word", () => {
+      b.placeWord("stuff", 0, 0, false);
+      for (let i = 0; i < 5; i++) {
+        expect(b.hasBlankAdjacentCells(i, 1, false)).toBeFalsy();
+      }
+    });
+
+
+  });
+
   describe("placeWord method", () => {
     test("throws error if isHorizontal is not specified", () => {
       expect(() => b.placeWord("anything", 0, 0)).toThrow();
@@ -243,31 +276,33 @@ describe("Board class", () => {
     });
 
     test("returns false when indices are below zero", () => {
-      expect(b.canPlaceWord("anything", -1, 0, true)).toBeFalsy();
-      expect(b.canPlaceWord("anything", 0, -1, false)).toBeFalsy();
-      expect(b.canPlaceWord("anything", -1, -3, true)).toBeFalsy();
+      expect(b.canPlaceWord("anything", -1, 0, true, 0)).toBeFalsy();
+      expect(b.canPlaceWord("anything", 0, -1, false, 0)).toBeFalsy();
+      expect(b.canPlaceWord("anything", -1, -3, true, 0)).toBeFalsy();
     });
 
     test("can place any word in blank board", () => {
-      expect(b.canPlaceWord("abcd", 0, 0, true)).toBeTruthy();
-      expect(b.canPlaceWord("abcd", 0, 0, false)).toBeTruthy();
+      expect(b.canPlaceWord("abcd", 0, 0, true, 0)).toBeTruthy();
+      expect(b.canPlaceWord("abcd", 0, 0, false, 0)).toBeTruthy();
     });
 
     test("returns true when word's length goes out of bounds", () => {
-      expect(b.canPlaceWord("supercalifragilisticexpialidocious", 0, 0, true)).toBeTruthy();
-      expect(b.canPlaceWord("supercalifragilisticexpialidocious", 0, 0, false)).toBeTruthy();
+      expect(b.canPlaceWord("supercalifragilisticexpialidocious", 0, 0, true, 0)).toBeTruthy();
+      expect(b.canPlaceWord("supercalifragilisticexpialidocious", 0, 0, false, 0)).toBeTruthy();
     });
 
     test("returns true when placing a horizontal word out of bounds", () => {
       expect(b.canPlaceWord("things", 0, b.width, true)).toBeTruthy();
       expect(b.canPlaceWord("things", b.height, 0, true)).toBeTruthy();
       expect(b.canPlaceWord("things", b.height, b.width, true)).toBeTruthy();
+      expect(b.canPlaceWord("things", 30, 50, true)).toBeTruthy();
     });
 
     test("returns true when placing a vertical word out of bounds", () => {
       expect(b.canPlaceWord("things", 0, b.width, false)).toBeTruthy();
       expect(b.canPlaceWord("things", b.height, 0, false)).toBeTruthy();
       expect(b.canPlaceWord("things", b.height, b.width, false)).toBeTruthy();
+      expect(b.canPlaceWord("things", 30, 50, false)).toBeTruthy();
     });
 
     test("returns true when two words intersect on the same letter", () => {
@@ -294,11 +329,25 @@ describe("Board class", () => {
       b.placeWord("things", 5, 5, false);
       expect(b.canPlaceWord("stuff", 5, 5, true)).toBeFalsy();
     });
+
+    test("returns false when checking if vertical word can be placed between two vertical words", () => {
+      b.placeWord("things", 5, 5, true);
+      b.placeWord("atlantic", 4, 5, false);
+      b.placeWord("itch", 5, 7, false);
+      expect(b.canPlaceWord("hinge", 5, 6, false, 6)).toBeFalsy();
+    });
+
+    test("returns false when checking if horizontal word can be placed between two vertical words", () => {
+      b.placeWord("things", 5, 5, false);
+      b.placeWord("atlantic", 5, 4, true);
+      b.placeWord("itch", 7, 5, true);
+      expect(b.canPlaceWord("hinge", 6, 5, false, 5)).toBeFalsy();
+    });
   });
 
   describe("genBoard method", () => {
     test.only("", () => {
-      b.genBoard();
+      b.genBoard(0, 0, 10);
     });
   });
   
