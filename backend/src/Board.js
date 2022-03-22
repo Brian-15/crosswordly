@@ -1,7 +1,7 @@
 'use strict';
 
 const Word = require("./Word");
-const trie = require("./seed");
+const trie = require("./dictionary");
 
 /** Board class that generates crossword puzzle */
 class Board {
