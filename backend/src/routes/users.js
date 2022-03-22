@@ -15,9 +15,10 @@ router.get('/', async (req, res, next) => {
 /* GET user listing. */
 router.get("/:id", async (req, res, next) => {
   const { id } = req.params;
+  console.log("id:", id);
   try {
     const user = await User.findOne({
-      where: { id },
+      where: { uuid: id },
       include: "words"
     });
     return res.status(200).json(user);

@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate({ Word }) {
       this.belongsToMany(Word, {
         through: "UserWords",
-        as: "users",
+        as: "words",
         foreignKey: "wordId"
       });
     }
