@@ -1,12 +1,14 @@
 const express = require("express");
 const router = express.Router();
-const Word = require("../models/word");
+const { Word } = require("../models");
 
-router.get("/:term", async (req, res, next) => {
-  const { term } = req.params;
+router.get("", async (req, res, next) => {
+  const term = req.query.term;
   try {
-    const word = await Word.findOne({ where: { word: term } });
-    return res.status(200).json(word);
+    const wordBank = term
+      ? await Word.findOne({ where: { word: term } })
+      : await Word.findAll();
+    return res.status(200).json(wordBank);
   } catch (err) {
     return next(err);
   }
