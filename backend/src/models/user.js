@@ -26,30 +26,50 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
+      validate: {
+        isUUID: true,
+        notEmpty: { msg: "uuid cannot be empty" }
+      }
     },
     username: {
       type: DataTypes.STRING,
       unique: true,
-      allowNull: false
+      allowNull: false,
+      validate: {
+        notNull: { msg: "User must have a username" },
+        notEmpty: { msg: "User's username cannot be empty" }
+      }
     },
     displayName: {
       type: DataTypes.STRING,
       unique: true,
-      allowNull: false
+      allowNull: false,
+      validate: {
+        notEmpty: { msg: "displayName cannot be empty" }
+      }
     },
     password: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      validate: {
+        notEmpty: { msg: "password cannot be empty" }
+      }
     },
     totalScore: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      defaultValue: 0
+      defaultValue: 0,
+      validate: {
+        min: 0
+      }
     },
     highScore: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      defaultValue: 0
+      defaultValue: 0,
+      validate: {
+        min: 0
+      }
     }
   }, {
     sequelize,
