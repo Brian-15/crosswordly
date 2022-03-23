@@ -9,17 +9,17 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate({ User }) {
+    static associate({ User, Definition }) {
       // define association here
       this.belongsToMany(User, {
-        through: "UserWords",
+        through: "user_words",
         as: "words",
         foreignKey: "userId"
       });
-    }
-
-    toJSON() {
-      return { ...this.get(), id: undefined };
+      this.hasMany(Definition, {
+        as: "definitions",
+        foreignKey: "wordId"
+      });
     }
   }
   Word.init({
@@ -33,10 +33,6 @@ module.exports = (sequelize, DataTypes) => {
       unique: true,
       allowNull: false
     },
-    definition: {
-      type: DataTypes.STRING(18000),
-      allowNull: true
-    }
   }, {
     sequelize,
     tableName: "words",
