@@ -7,15 +7,16 @@
     "dialect": "postgres"
   },
   "test": {
-    "username": "root",
+    "username": "bcirieco_dev",
     "password": "P0sT-T3n3Br@s-Lux",
     "database": "crosswordly_test",
     "host": "127.0.0.1",
-    "dialect": "postgres"
+    "dialect": "postgres",
+    "logging": false
   },
   "production": {
     "username": "root",
-    "password": "P0sT-T3n3Br@s-Lux",
+    "password": "root",
     "database": "crosswordly_production",
     "host": "127.0.0.1",
     "dialect": "postgres"
