@@ -1,5 +1,5 @@
-const Trie = require("./Trie");
-const TrieNode = require("./TrieNode");
+const Trie = require("../../Trie");
+const TrieNode = require("../../TrieNode");
 
 describe("Trie class data structure", () => {
   let t;

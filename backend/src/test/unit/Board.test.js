@@ -1,4 +1,4 @@
-const Board = require("./Board");
+const Board = require("../../Board");
 
 describe("Board class", () => {
   const _ = null, WIDTH = 5, HEIGHT = 6;

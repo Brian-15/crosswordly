@@ -1,4 +1,4 @@
-const Word = require("./Word");
+const Word = require("../../Word");
 
 describe("Word class", () => {
 

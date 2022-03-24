@@ -1,4 +1,4 @@
-const TrieNode = require("./TrieNode");
+const TrieNode = require("../../TrieNode");
 
 describe("TrieNode class", () => {
   let node;
