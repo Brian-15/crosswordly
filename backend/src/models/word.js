@@ -31,7 +31,11 @@ module.exports = (sequelize, DataTypes) => {
     word: {
       type: DataTypes.STRING,
       unique: true,
-      allowNull: false
+      allowNull: false,
+      validate: {
+        notNull: { msg: "word must be included" },
+        notEmpty: { msg: "word cannot not be an empty string" }
+      }
     },
   }, {
     sequelize,

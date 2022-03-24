@@ -10,7 +10,11 @@ router.get("", async (req, res, next) => {
   try {
     if (!term) return res.status(200).json(await Word.findAll());
 
-    let word = await Word.findOne({ where: { word: term } });
+    let word = await Word.findOne({
+      where: { word: term },
+      include: "definitions"
+    });
+    
     if (!word.definitions.length) {
       // parse definition data from Free Dictionary API https://dictionaryapi.dev/
       const definitions = await axios.get(API_URL + term);
@@ -30,7 +34,7 @@ router.get("", async (req, res, next) => {
           });
         });
       });
-      word = await Word.findOne({ where: { word: term } });
+      word = await Word.findOne({ where: { word: term }, include: "definitions" });
     }
     return res.status(200).json(word);
   } catch (err) {
