@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate({ Category }) {
-      this.hasOne(Category, )
+      this.belongsTo(Category, { as: "category" });
     }
 
     toJSON() {

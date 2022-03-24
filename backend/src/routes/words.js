@@ -28,7 +28,7 @@ router.get("", async (req, res, next) => {
             await Definition.create({
               definition,
               example,
-              typeId: category.id,
+              categoryId: category.id,
               wordId: word.id
             });
           });

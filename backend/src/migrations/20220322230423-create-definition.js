@@ -10,7 +10,7 @@ module.exports = {
       wordId: {
         type: Sequelize.INTEGER
       },
-      typeId: {
+      categoryId: {
         type: Sequelize.INTEGER
       },
       definition: {
