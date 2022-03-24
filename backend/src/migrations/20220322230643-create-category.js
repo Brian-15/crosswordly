@@ -1,24 +1,23 @@
 'use strict';
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('words', {
+    await queryInterface.createTable('categories', {
       id: {
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      word: {
+      name: {
         type: DataTypes.STRING,
         unique: true,
         allowNull: false,
         validate: {
-          notNull: { msg: "word must be included" },
-          notEmpty: { msg: "word cannot not be an empty string" }
+          notEmpty: { msg: "category name must not be empty" }
         }
       }
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Words');
+    await queryInterface.dropTable('Categories');
   }
 };
