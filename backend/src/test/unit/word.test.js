@@ -28,7 +28,7 @@ describe("Word model unit tests", () => {
     const { id } = await Category.create({ name: "noun" });
     await Definition.create({
       definition: "greeting",
-      typeId: id,
+      categoryId: id,
       wordId: word.id,
       example: "We were given a warm hello."
     });
