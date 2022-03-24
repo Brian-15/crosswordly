@@ -88,36 +88,34 @@ describe("Board class", () => {
   });
 
   describe("hasBlankAdjacentCells method", () => {
-    test("should return false when either x or y are out of bounds", () => {
+    test("should return true when either x or y are out of bounds", () => {
       for (const bool of [true, false]) {
-        expect(b.hasBlankAdjacentCells(b.height, 0, bool)).toBeFalsy();
-        expect(b.hasBlankAdjacentCells(0, b.width, bool)).toBeFalsy();
-        expect(b.hasBlankAdjacentCells(b.height, b.width, bool)).toBeFalsy();
+        expect(b.hasBlankAdjacentCells(b.height, 0, bool, bool ? b.height : 0)).toBeTruthy();
+        expect(b.hasBlankAdjacentCells(0, b.width, bool, bool ? 0 : b.width)).toBeTruthy();
+        expect(b.hasBlankAdjacentCells(b.height, b.width, bool, bool ? b.height : b.width)).toBeTruthy();
       }
     });
 
     test("should return true when all cells are blank", () => {
-      expect(b.hasBlankAdjacentCells(0, 0, true)).toBeTruthy();
-      expect(b.hasBlankAdjacentCells(0, 0, false)).toBeTruthy();
-      expect(b.hasBlankAdjacentCells(2, 2, true)).toBeTruthy();
-      expect(b.hasBlankAdjacentCells(2, 2, false)).toBeTruthy();
+      expect(b.hasBlankAdjacentCells(0, 0, true, 0)).toBeTruthy();
+      expect(b.hasBlankAdjacentCells(0, 0, false, 0)).toBeTruthy();
+      expect(b.hasBlankAdjacentCells(2, 2, true, 0)).toBeTruthy();
+      expect(b.hasBlankAdjacentCells(2, 2, false, 0)).toBeTruthy();
     });
 
     test("should return false for a position next to a horizontal word", () => {
       b.placeWord("stuff", 0, 0, true);
       for (let i = 0; i < 5; i++) {
-        expect(b.hasBlankAdjacentCells(1, i, true)).toBeFalsy();
+        expect(b.hasBlankAdjacentCells(1, i, true, 0)).toBeFalsy();
       }
     });
 
     test("should return false for a position next to a vertical word", () => {
       b.placeWord("stuff", 0, 0, false);
       for (let i = 0; i < 5; i++) {
-        expect(b.hasBlankAdjacentCells(i, 1, false)).toBeFalsy();
+        expect(b.hasBlankAdjacentCells(i, 1, false, 0)).toBeFalsy();
       }
     });
-
-
   });
 
   describe("placeWord method", () => {
@@ -139,7 +137,8 @@ describe("Board class", () => {
 
     test("places word across another", () => {
       b.placeWord("stuff", 2, 1, true);
-      expect(b.canPlaceWord("atmosphere", 1, 2, false)).toBeTruthy();
+      console.table(b.rows);
+      expect(b.canPlaceWord("atmosphere", 1, 2, false, 2)).toBeTruthy();
       b.placeWord("atmosphere", 1, 2, false);
       expect(b.rows).toEqual([
         [ _, _, _, _, _, _ ],
@@ -346,7 +345,7 @@ describe("Board class", () => {
   });
 
   describe("genBoard method", () => {
-    test.only("", () => {
+    test("", () => {
       b.genBoard(0, 0, 10);
     });
   });

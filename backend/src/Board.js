@@ -63,18 +63,20 @@ class Board {
    *  - horizontally: (x, y + 1), (x + 1, y), (x - 1, y);
    *  - vertically: (x + 1, y), (x, y - 1), (x, y + 1);
    */
-  hasBlankAdjacentCells = (x, y, isHorizontal) => {
-    if (x >= this.height || y >= this.width) return false;
+  hasBlankAdjacentCells = (x, y, isHorizontal, intersectionIdx) => {
     if (isHorizontal) {
-      if ((this.rows[x] && this.rows[x][y + 1]) ||
+      if (y >= this.width) return true;
+      if ((this.rows[x] && y + 1 !== intersectionIdx && this.rows[x][y + 1]) ||
           (this.rows[x + 1] && this.rows[x + 1][y]) ||
           (this.rows[x - 1] && this.rows[x - 1][y]))
       {
         return false;
       }
     } else {
-      if ((this.rows[x + 1] && this.rows[x + 1][y]) ||
-          this.rows[x][y - 1] || this.rows[x][y + 1])
+      if (x >= this.height) return true;
+      if (x + 1 !== intersectionIdx && 
+          ((this.rows[x + 1] && this.rows[x + 1][y]) ||
+          this.rows[x][y - 1] || this.rows[x][y + 1]))
       {
         return false;
       }
@@ -90,10 +92,15 @@ class Board {
       if (!this.rows[x]) return true;
       if (intersectionIdx === y && this.rows[x][y - 1]) return false;
       for (let i = 0; i < word.length; i++) {
-        // cannot place if character is present, and does not match
+        // once out of bounds, word can be placed
         if (this.rows[x][y + i] === undefined) break;
+
+        // check if this word intersects with another
+        // if there is a word, ensure that it is vertical
+        if (this.rows[x][y + i] === word[i] && this.rows[x][y + i + 1] === null) continue;
+
         if ((this.rows[x][y + i] && this.rows[x][y + i] !== word[i]) ||
-            (y + i !== intersectionIdx && !this.hasBlankAdjacentCells(x, y + i, true)))
+            (y + i !== intersectionIdx && !this.hasBlankAdjacentCells(x, y + i, true, intersectionIdx)))
         {
           return false;
         }
@@ -101,9 +108,14 @@ class Board {
     } else {
       if (intersectionIdx === x && this.rows[x - 1] && this.rows[x - 1][y]) return false;
       for (let i = 0; i < word.length; i++) {
+        // once out of bounds, word can be placed
         if (!this.rows[x + i]) break;
+
+        // check if this word intersects with another
+        // if there is a word, ensure that it is horizontal
+        if (this.rows[x + i][y] === word[i] && (!this.rows[x + i + 1] || this.rows[x + i + 1][y] === null)) continue;
         if ((this.rows[x + i][y] && this.rows[x + i][y] !== word[i]) ||
-            (x + i !== intersectionIdx && !this.hasBlankAdjacentCells(x + i, y, false)))
+            (x + i !== intersectionIdx && !this.hasBlankAdjacentCells(x + i, y, false, intersectionIdx)))
         {
           return false;
         }
