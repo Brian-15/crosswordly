@@ -1,3 +1,4 @@
+process.env.NODE_ENV = "test";
 const Board = require("../../Board");
 
 describe("Board class", () => {
@@ -23,11 +24,11 @@ describe("Board class", () => {
 
   describe("at method", () => {
     test("returns row if only first argument x is specified", () => {
-      expect(b.at(0)).toEqual(new Array(WIDTH).fill(null));
+      expect(b.at(0)).toEqual(new Array(WIDTH).fill(_));
     });
 
     test("returns cell value when both x and y arguments are specified", () => {
-      expect(b.at(0, 0)).toBe(null);
+      expect(b.at(0, 0)).toBe(_);
     });
   });
 
@@ -345,8 +346,25 @@ describe("Board class", () => {
   });
 
   describe("genBoard method", () => {
-    test("", () => {
+    test("generates board matrix properly", () => {
+      Math.random = jest.fn(() => 1);
       b.genBoard(0, 0, 10);
+      expect(b.rows).toEqual([
+        ['l', 'i', 'k', 'e', _, _, _],
+        ['i', _, _,_, _, _, _],
+        ['k', _, _, 'b', 'a', 'l', 'k'],
+        ['e', _, _, 'a', _, _, _],
+        ['a', _, _, 'i', _, _, _],
+        ['b', 'a', 'i', 'l', 'e', 'e', _],
+        ['l', _, _, 'i', _, _, _],
+        ['e', _, _, 'k', _, _, _],
+        [_, _, 'b', 'a', 'l', 'l', _],
+        [_, _, _, 'b', _, _, _],
+        [_, _, _, 'l', 'i', 'e', _],
+        ['b', 'a', 'l', 'e', _, _, _],
+        [_, _, 'i', _, _, _, _],
+        [_, _, 'b', _, _, _, _]
+      ]);
     });
   });
   

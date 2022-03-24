@@ -90,6 +90,7 @@ class Board {
     
     if (isHorizontal) {
       if (!this.rows[x]) return true;
+      if (this.rows[x][y - 1]) return false;
       if (intersectionIdx === y && this.rows[x][y - 1]) return false;
       for (let i = 0; i < word.length; i++) {
         // once out of bounds, word can be placed
@@ -106,6 +107,7 @@ class Board {
         }
       }
     } else {
+      if (this.rows[x - 1] && this.rows[x - 1][y]) return false;
       if (intersectionIdx === x && this.rows[x - 1] && this.rows[x - 1][y]) return false;
       for (let i = 0; i < word.length; i++) {
         // once out of bounds, word can be placed
