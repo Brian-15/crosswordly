@@ -12,6 +12,10 @@ module.exports = (sequelize, DataTypes) => {
     static associate({ Definition }) {
       this.hasMany(Definition, { foreignKey: "categoryId" });
     }
+
+    toJSON() {
+      return {...this.get(), id: undefined};
+    }
   }
   Category.init({
     id: {

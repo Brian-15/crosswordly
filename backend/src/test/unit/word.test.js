@@ -10,12 +10,11 @@ describe("Word model unit tests", () => {
     await Word.create({ word: "hello" });
     word = await Word.findOne({
       where: { word: "hello" },
-      include: "definitions"
+      include: {
+        all: true,
+        nested: true
+      }
     });
-  });
-
-  afterAll(async () => {
-    await sequelize.close();
   });
 
   test("instantiates properly", () => {
@@ -34,10 +33,14 @@ describe("Word model unit tests", () => {
     });
     word = await Word.findOne({
       where: { id: word.id },
-      include: "definitions"
+      include: {
+        all: true,
+        nested: true,
+      }
     });
     expect(word.definitions).toBeTruthy();
     expect(word.definitions.length).toBe(1);
+    expect(word.definitions[0].category.name).toBe("noun");
   });
 
   test("will not create word with empty string", async () => {

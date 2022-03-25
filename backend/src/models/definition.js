@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
 
     toJSON() {
       const _ = undefined;
-      return { ...this.get(), id: _, wordId: _, typeId: _ };
+      return { ...this.get(), id: _, wordId: _, categoryId: _ };
     }
   }
   Definition.init({

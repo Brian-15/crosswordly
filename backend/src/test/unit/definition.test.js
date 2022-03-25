@@ -20,10 +20,6 @@ describe("Definition model", () => {
     await sequelize.sync({ force: true });
   });
 
-  afterAll(async () => {
-    await sequelize.close();
-  });
-
   test("instantiates properly", async () => {
     expect(word && category && definition).toBeTruthy();
     expect(definition.wordId).toBe(word.id);
