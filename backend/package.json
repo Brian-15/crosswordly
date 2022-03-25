@@ -1,9 +1,13 @@
 {
   "name": "capstone2-crosswordly-backend",
+  "jest": {
+    "globalTeardown": "./src/test/globalTeardown.js"
+  },
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./src/bin/www"
+    "start": "node ./src/bin/www",
+    "test": "jest --detectOpenHandles -i"
   },
   "dependencies": {
     "axios": "^0.26.1",
