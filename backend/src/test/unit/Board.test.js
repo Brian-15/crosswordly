@@ -138,7 +138,6 @@ describe("Board class", () => {
 
     test("places word across another", () => {
       b.placeWord("stuff", 2, 1, true);
-      console.table(b.rows);
       expect(b.canPlaceWord("atmosphere", 1, 2, false, 2)).toBeTruthy();
       b.placeWord("atmosphere", 1, 2, false);
       expect(b.rows).toEqual([
