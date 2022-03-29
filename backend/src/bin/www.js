@@ -4,23 +4,28 @@
  * Module dependencies.
  */
 
+const fs = require("fs");
+const key = fs.readFileSync(__dirname + "/key.pem");
+const cert = fs.readFileSync(__dirname + "/cert.pem");
 const app = require("../app");
 const debug = require("debug")("backend:server");
-const http = require("http");
 const { sequelize } = require("../models");
+// const https = require("https");
+const http = require("http");
 
 /**
  * Get port from environment and store in Express.
  */
 
-const port = normalizePort(process.env.PORT || "3000");
+const port = normalizePort(process.env.PORT || "3001");
 app.set("port", port);
 
 /**
  * Create HTTP server.
  */
 
-const server = http.createServer(app);
+// const server = https.createServer({ key, cert }, app);
+const server = http.createServer({ key, cert }, app);
 
 /**
  * Listen on provided port, on all network interfaces.
@@ -87,7 +92,7 @@ async function onListening() {
   const bind = typeof addr === "string"
     ? "pipe " + addr
     : "port " + addr.port;
-  await sequelize.sync({ force: true });
-  // await sequelize.authenticate();
+  // await sequelize.sync({ force: true });
+  await sequelize.authenticate();
   debug("Listening on " + bind);
 }

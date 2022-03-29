@@ -12,9 +12,9 @@ module.exports = {
      *   isBetaMember: false
      * }], {});
     */
-    return await queryInterface.bulkInsert("words", Object.keys(dict).map(key => {
-      return { word: key };
-    }), {});
+    // return await queryInterface.bulkInsert("words", Object.keys(dict).map(key => {
+    //   return { word: key };
+    // }), {});
   },
 
   async down (queryInterface, Sequelize) {

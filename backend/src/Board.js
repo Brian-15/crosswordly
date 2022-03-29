@@ -194,7 +194,7 @@ class Board {
           if (this.canPlaceWord(word, x, y, isHorizontal, intersectionIdx)) {
             this.placeWord(word, x, y, !placedWord.isHorizontal);
             const newPlacedWord = new Word(word, x, y, !placedWord.isHorizontal);
-            this.activeWords[word] = true;
+            this.activeWords[word] = newPlacedWord.getCoords();
             placedWords.push(newPlacedWord);
             foundMatch = true;
             isHorizontal = !isHorizontal;

@@ -19,7 +19,7 @@ describe("/words route", () => {
       expect(body).toEqual([ { id: 1, word: "hello" } ]);
     });
 
-    test.only("returns word object with definitions association when term is specified", async () => {
+    test("returns word object with definitions association when term is specified", async () => {
       const { statusCode, body } = await request(app).get("/words?term=hello");
       expect(statusCode).toBe(200);
       expect(body.definitions.length).toBe(7);

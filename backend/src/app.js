@@ -1,5 +1,6 @@
 const logger = require("morgan");
 const express = require("express");
+const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const indexRouter = require("./routes/index");
 const boardsRouter = require("./routes/boards");
@@ -11,6 +12,7 @@ app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(cors());
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/words", wordsRouter);
